@@ -14,15 +14,12 @@ reset: clean
 	ps2client -h 192.168.0.10 reset
 
 clean:
-	rm -f *.o *.irx
-
-include $(PS2SDK)/samples/Makefile.pref
-include $(PS2SDK)/samples/Makefile.iopglobal
+	rm -f $(IOP_BIN) $(IOP_OBJS)
 
 # compiling with iop-gcc 3.2.2 causes weird problems in ps2ftpd
 # temporary solution is to turn off compiler optimization
 
-IOP_CFLAGS = $(CFLAGS_TARGET) -O2 -G0 -c $(IOP_INCS) -Wall -fno-builtin
+# IOP_CFLAGS += $(CFLAGS_TARGET) -O2 -G0 -c $(IOP_INCS) -Wall -fno-builtin
 
 # A rule to build imports.lst.
 %.o : %.lst
@@ -37,3 +34,8 @@ IOP_CFLAGS = $(CFLAGS_TARGET) -O2 -G0 -c $(IOP_INCS) -Wall -fno-builtin
 	cat $< >> build-exports.c
 	$(IOP_CC) $(IOP_CFLAGS) build-exports.c -o $@
 	-rm -f build-exports.c
+
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.iopglobal
+#include $(PS2SDKSRC)/Defs.make
+#include $(PS2SDKSRC)/iop/Rules.make
