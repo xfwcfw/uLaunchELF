@@ -60,6 +60,8 @@
 
 #include "sysclib.h"
 
+#include "../../SMSUTILS/smsutils.h"
+
 #if LWIP_TCP
 
 /* Forward declarations.*/

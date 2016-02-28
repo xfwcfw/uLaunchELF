@@ -44,6 +44,7 @@
 
 #include "lwip/sys.h"
 #include "lwip/stats.h"
+#include <intrman.h>
 
 struct memp {
   struct memp *next;

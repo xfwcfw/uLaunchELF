@@ -40,6 +40,10 @@
 #include "lwip/sockets.h"
 
 #include "sysclib.h"
+
+#include "../../SMSUTILS/smsutils.h"
+#include <thsemap.h>
+
 #include <errno.h>
 
 #define NUM_SOCKETS MEMP_NUM_NETCONN

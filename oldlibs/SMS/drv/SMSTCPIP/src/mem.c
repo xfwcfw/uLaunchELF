@@ -48,6 +48,9 @@
 
 #include "sysclib.h"
 
+#include "../../SMSUTILS/smsutils.h"
+#include <thsemap.h>
+
 struct mem {
   mem_size_t next, prev;
 #if MEM_ALIGNMENT == 1

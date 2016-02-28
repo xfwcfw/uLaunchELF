@@ -32,10 +32,10 @@
 
 #include "lwip/opt.h"
 #include "lwip/arch.h"
+#include "lwip/tcpip.h"
 #include "lwip/api_msg.h"
 #include "lwip/memp.h"
 #include "lwip/sys.h"
-#include "lwip/tcpip.h"
 
 #if LWIP_RAW
 static int

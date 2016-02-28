@@ -22,7 +22,8 @@
 #include "sysclib.h"
 #include "sysmem.h"
 #include "thbase.h"
-#include "dns.h"
+//#include <$PS2SDK\common\tcpip\lwip-1.4.1\src\include\lwip\dns.h>
+//#include <dns.h>
 #include "ioman_mod.h"
 #include "iopmgr.h"
 

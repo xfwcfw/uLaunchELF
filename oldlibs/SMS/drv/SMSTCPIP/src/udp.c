@@ -58,6 +58,8 @@
 
 #include "sysclib.h"
 
+#include "../../SMSUTILS/smsutils.h"
+
 /* The list of UDP PCBs */
 #if LWIP_UDP
 /* was static, but we may want to access this from a socket layer */
@@ -389,7 +391,7 @@ udp_input(struct pbuf *p, struct netif *inp)
   } else {
     pbuf_free(p);
   }
-  end:
+  end:;
 
 }
 /**

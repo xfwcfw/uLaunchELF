@@ -190,7 +190,7 @@ static err_t SMapLowLevelOutput ( NetIF* pNetIF, PBuf* pOutput ) {
 
 static err_t SMapOutput ( NetIF* pNetIF, PBuf* pOutput, IPAddr* pIPAddr ) {
 
- PBuf* pBuf = etharp_output ( pNetIF, pIPAddr, pOutput );
+ PBuf* pBuf = etharp_output ( pNetIF, pOutput, pIPAddr );
 
  return pBuf ? SMapLowLevelOutput ( pNetIF, pBuf ) : ERR_OK;
 

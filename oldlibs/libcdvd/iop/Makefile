@@ -1,4 +1,4 @@
-IOP_LDFLAGS += -m mipsirx 
+#IOP_LDFLAGS += -m mipsirx 
 
 IOP_BIN = ../lib/cdvd.irx
 

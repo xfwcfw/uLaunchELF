@@ -56,6 +56,8 @@
 
 #include "sysclib.h"
 
+#include "../../SMSUTILS/smsutils.h"
+
 #if LWIP_TCP
 
 /* Incremented every coarse grained timer shot

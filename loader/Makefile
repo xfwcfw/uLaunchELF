@@ -1,7 +1,10 @@
  EE_INCS := $(EE_INCS) -I$(PS2SDK)/sbv/include
 
-EE_CFLAGS  := -mips3 -ffreestanding -fno-builtin -G0 \
-		-fshort-double -mlong64 -mhard-float -mno-abicalls -O2 -EL -Wall \
+EE_CFLAGS  := -ffreestanding -fno-builtin -G0 \
+		-fshort-double -mhard-float -mno-abicalls -O2 -EL -Wall \
+		$(EE_INCS) $(EE_CFLAGS)
+#EE_CFLAGS  := -G0 \
+		-O2 -EL -Wall \
 		$(EE_INCS) $(EE_CFLAGS)
 
 EE_ASFLAGS := -EL -G0 $(EE_ASFLAGS)
