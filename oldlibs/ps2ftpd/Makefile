@@ -7,24 +7,24 @@
 # Review ps2sdk README & LICENSE files for further details.
 #
 
-IOP_OBJS_DIR = obj/
-IOP_BIN_DIR = irx/
-IOP_SRC_DIR = src/
-IOP_INC_DIR = include/
-
-IOP_BIN = $(IOP_BIN_DIR)ps2ftpd.irx
+IOP_BIN = ps2ftpd.irx
 IOP_OBJS = main.o FileSystem.o FtpServer.o FtpClient.o FtpCommands.o FtpMessages.o imports.o
-IOP_OBJS := $(IOP_OBJS:%=$(IOP_OBJS_DIR)%)
 
-IOP_CFLAGS += -Wall -fno-builtin
+IOP_CFLAGS += -fno-builtin
 #IOP_CFLAGS +=  -DDEBUG
-IOP_LDFLAGS += -s
-IOP_INCS += -I$(PS2SDK)/iop/include
 
-all: $(IOP_OBJS_DIR) $(IOP_BIN_DIR) $(IOP_BIN)
+# A rule to build imports.lst.
+%.o : %.lst
+	$(ECHO) "#include \"irx_imports.h\"" > build-imports.c
+	cat $< >> build-imports.c
+	$(IOP_CC) $(IOP_CFLAGS) -fno-toplevel-reorder -I. -c build-imports.c -o $@
+	-rm -f build-imports.c
+
+all: $(IOP_BIN)
 
 clean:
-	rm -f -r $(IOP_OBJS_DIR) $(IOP_BIN_DIR)
+	rm -f -r $(IOP_OBJS) $(IOP_BIN)
 
 include $(PS2SDK)/Defs.make
-include Rules.make
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.iopglobal

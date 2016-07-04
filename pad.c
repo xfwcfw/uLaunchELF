@@ -122,7 +122,7 @@ int readpad_no_KB(void)
 int simPadKB(void)
 {
 	int	ret, command;
-	unsigned char KeyPress;
+	char KeyPress;
 
 	if((!setting->usbkbd_used)||(!PS2KbdRead(&KeyPress)))
 		return 0;

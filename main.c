@@ -10,60 +10,60 @@
 //dlanor: I'm correcting all these erroneous 'u8 *name' declarations
 //dlanor: They are not pointers at all, but pure block addresses
 //dlanor: Thus they should be declared as 'void name'
-extern void iomanx_irx;
-extern int  size_iomanx_irx;
-extern void filexio_irx;
-extern int  size_filexio_irx;
-extern void ps2dev9_irx;
-extern int  size_ps2dev9_irx;
-extern void ps2ip_irx;
-extern int  size_ps2ip_irx;
-extern void ps2smap_irx;
-extern int  size_ps2smap_irx;
-extern void smsutils_irx;
-extern int  size_smsutils_irx;
-extern void ps2host_irx;
-extern int  size_ps2host_irx;
+extern unsigned char iomanx_irx;
+extern unsigned int  size_iomanx_irx;
+extern unsigned char filexio_irx;
+extern unsigned int  size_filexio_irx;
+extern unsigned char ps2dev9_irx;
+extern unsigned int  size_ps2dev9_irx;
+extern unsigned char ps2ip_irx;
+extern unsigned int  size_ps2ip_irx;
+extern unsigned char ps2smap_irx;
+extern unsigned int  size_ps2smap_irx;
+extern unsigned char smsutils_irx;
+extern unsigned int  size_smsutils_irx;
+extern unsigned char ps2host_irx;
+extern unsigned int  size_ps2host_irx;
 #ifdef SMB
-extern void smbman_irx;
-extern int  size_smbman_irx;
+extern unsigned char smbman_irx;
+extern unsigned int  size_smbman_irx;
 #endif
-extern void vmc_fs_irx;
-extern int  size_vmc_fs_irx;
-extern void ps2ftpd_irx;
-extern int  size_ps2ftpd_irx;
-extern void ps2atad_irx;
-extern int  size_ps2atad_irx;
-extern void ps2hdd_irx;
-extern int  size_ps2hdd_irx;
-extern void ps2fs_irx;
-extern int  size_ps2fs_irx;
-extern void poweroff_irx;
-extern int  size_poweroff_irx;
-extern void loader_elf;
-extern int  size_loader_elf;
-extern void ps2netfs_irx;
-extern int  size_ps2netfs_irx;
-extern void iopmod_irx;
-extern int  size_iopmod_irx;
-extern void usbd_irx;
-extern int  size_usbd_irx;
-extern void usb_mass_irx;
-extern int  size_usb_mass_irx;
-extern void cdvd_irx;
-extern int  size_cdvd_irx;
-extern void ps2kbd_irx;
-extern int  size_ps2kbd_irx;
-extern void hdl_info_irx;
-extern int  size_hdl_info_irx;
-extern void mcman_irx;
-extern int  size_mcman_irx;
-extern void mcserv_irx;
-extern int  size_mcserv_irx;
-extern void sior_irx;
-extern int  size_sior_irx;
-extern void allowdvdv_irx;
-extern int  size_allowdvdv_irx;
+extern unsigned char vmc_fs_irx;
+extern unsigned int  size_vmc_fs_irx;
+extern unsigned char ps2ftpd_irx;
+extern unsigned int  size_ps2ftpd_irx;
+extern unsigned char ps2atad_irx;
+extern unsigned int  size_ps2atad_irx;
+extern unsigned char ps2hdd_irx;
+extern unsigned int  size_ps2hdd_irx;
+extern unsigned char ps2fs_irx;
+extern unsigned int  size_ps2fs_irx;
+extern unsigned char poweroff_irx;
+extern unsigned int  size_poweroff_irx;
+extern unsigned char loader_elf;
+extern unsigned int  size_loader_elf;
+extern unsigned char ps2netfs_irx;
+extern unsigned int  size_ps2netfs_irx;
+extern unsigned char iopmod_irx;
+extern unsigned int  size_iopmod_irx;
+extern unsigned char usbd_irx;
+extern unsigned int  size_usbd_irx;
+extern unsigned char usb_mass_irx;
+extern unsigned int  size_usb_mass_irx;
+extern unsigned char cdvd_irx;
+extern unsigned int  size_cdvd_irx;
+extern unsigned char ps2kbd_irx;
+extern unsigned int  size_ps2kbd_irx;
+extern unsigned char hdl_info_irx;
+extern unsigned int  size_hdl_info_irx;
+extern unsigned char mcman_irx;
+extern unsigned int  size_mcman_irx;
+extern unsigned char mcserv_irx;
+extern unsigned int  size_mcserv_irx;
+extern unsigned char sior_irx;
+extern unsigned int  size_sior_irx;
+extern unsigned char allowdvdv_irx;
+extern unsigned int  size_allowdvdv_irx;
 
 //#define DEBUG
 #ifdef DEBUG
@@ -231,7 +231,7 @@ int	PrintRow(int row_f, char *text_p)
 
 	if(row_f >= 0) row = row_f;
 	y = (Menu_start_y + FONT_HEIGHT*row++);
-	printXY(text_p, x, y, setting->color[3], TRUE, 0);
+	printXY((u8 *)text_p, x, y, setting->color[3], TRUE, 0);
 	return row;
 }  
 //------------------------------
@@ -246,7 +246,7 @@ int	PrintPos(int row_f, int column, char *text_p)
 
 	if(row_f >= 0) row = row_f;
 	y = (Menu_start_y + FONT_HEIGHT*row++);
-	printXY(text_p, x, y, setting->color[3], TRUE, 0);
+	printXY((u8 *)text_p, x, y, setting->color[3], TRUE, 0);
 	return row;
 }  
 //------------------------------
@@ -411,7 +411,7 @@ int drawMainScreen(void)
 		else            sprintf(c, "%s: %s", LNG(TIMEOUT), LNG(Halted));
 	}
 	if(c[0]){
-		printXY(c, x, y, setting->color[3], TRUE, 0);
+		printXY((u8 *)c, x, y, setting->color[3], TRUE, 0);
 		y += FONT_HEIGHT*2;
 	}
 	for(i=0; i<15; i++){
@@ -489,23 +489,23 @@ int drawMainScreen(void)
 				strlen(LNG(LEFT))+2:strlen(LNG(RIGHT))+2;
 			if(i==13){ // LEFT
 				if(strlen(LNG(RIGHT))+2>strlen(LNG(LEFT))+2)
-					printXY(c, x+(strlen(LNG(RIGHT))+2>9?
+					printXY((u8 *)c, x+(strlen(LNG(RIGHT))+2>9?
 						((strlen(LNG(RIGHT))+2)-(strlen(LNG(LEFT))+2))*FONT_WIDTH:
 						(9-(strlen(LNG(LEFT))+2))*FONT_WIDTH), y, color, TRUE, 0);
 				else
-					printXY(c, x+(strlen(LNG(LEFT))+2>9?
+					printXY((u8 *)c, x+(strlen(LNG(LEFT))+2>9?
 						0:(9-(strlen(LNG(LEFT))+2))*FONT_WIDTH), y, color, TRUE, 0);
 			}else if (i==14){ // RIGHT
 				if(strlen(LNG(LEFT))+2>strlen(LNG(RIGHT))+2)
-					printXY(c, x+(strlen(LNG(LEFT))+2>9?
+					printXY((u8 *)c, x+(strlen(LNG(LEFT))+2>9?
 						((strlen(LNG(LEFT))+2)-(strlen(LNG(RIGHT))+2))*FONT_WIDTH:
 						(9-(strlen(LNG(RIGHT))+2))*FONT_WIDTH), y, color, TRUE, 0);
 				else
-					printXY(c, x+(strlen(LNG(RIGHT))+2>9?
+					printXY((u8 *)c, x+(strlen(LNG(RIGHT))+2>9?
 						0:(9-(strlen(LNG(RIGHT))+2))*FONT_WIDTH), y, color, TRUE, 0);
 			}else
-				printXY(c, x+(len>9? (len-9)*FONT_WIDTH:0), y, color, TRUE, 0);
-			printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH), y, color, TRUE, 0);
+				printXY((u8 *)c, x+(len>9? (len-9)*FONT_WIDTH:0), y, color, TRUE, 0);
+			printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH), y, color, TRUE, 0);
 			y += FONT_HEIGHT;
 		} //ends clause for defined LK_Path[i] valid for menu
 	} //ends for
@@ -548,14 +548,14 @@ int drawMainScreen2(int TV_mode)
 	}
 
 	if(TV_mode == TV_mode_PAL){
-		printXY(c, x+448, y+FONT_HEIGHT+6, setting->color[3], TRUE, 0);
+		printXY((u8 *)c, x+448, y+FONT_HEIGHT+6, setting->color[3], TRUE, 0);
 		y += FONT_HEIGHT+5;
 		yo_first = 5;
 		yo_step = FONT_HEIGHT*2;
 		yo_config = -92;
 		xo_config = 370;
 	}else if(TV_mode == TV_mode_NTSC){
-		printXY(c, x+448, y+FONT_HEIGHT-5, setting->color[3], TRUE, 0);
+		printXY((u8 *)c, x+448, y+FONT_HEIGHT-5, setting->color[3], TRUE, 0);
 		y += FONT_HEIGHT-3;
 		yo_first = 3;
 		yo_step = FONT_HEIGHT*2-4;
@@ -590,15 +590,15 @@ int drawMainScreen2(int TV_mode)
 			int len = (strlen(LNG(LEFT))+2>strlen(LNG(RIGHT))+2)?
 				strlen(LNG(LEFT))+2:strlen(LNG(RIGHT))+2;
 			if (i==0)
-				printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+20, y, color, TRUE, 0);
+				printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+20, y, color, TRUE, 0);
 			else if (i==12)
-				printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
+				printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
 			else if (i==13)
-				printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
+				printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
 			else if (i==14)
-				printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
+				printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+xo_config, y, color, TRUE, 0);
 			else
-				printXY(f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+10, y, color, TRUE, 0);
+				printXY((u8 *)f, x+(len>9? len*FONT_WIDTH:9*FONT_WIDTH)+10, y, color, TRUE, 0);
 		} //ends clause for defined LK_Path[i] valid for menu
 		y += yo_step;
 		if (i==0)
@@ -1274,7 +1274,7 @@ void startKbd(void)
 //---------------------------------------------------------------------------
 //scanSystemCnf will check for a standard variable of a SYSTEM.CNF file
 //------------------------------
-int scanSystemCnf(unsigned char *name, unsigned char *value)
+int scanSystemCnf(char *name, char *value)
 {
 	if(!strcmp(name,"BOOT")) strncat(SystemCnf_BOOT, value, MAX_PATH-1);
 	else if(!strcmp(name,"BOOT2")) strncat(SystemCnf_BOOT2, value, MAX_PATH-1);
@@ -1303,7 +1303,7 @@ int readSystemCnf(void)
 	if( (RAM_p = preloadCNF("cdrom0:\\SYSTEM.CNF;1")) != NULL){
 		CNF_p = RAM_p;
 		for(var_cnt = 0; get_CNF_string(&CNF_p, &name, &value); var_cnt++)
-			dummy = scanSystemCnf(name, value);
+			dummy = scanSystemCnf((char *)name, (char *)value);
 		free(RAM_p);
 	}
 

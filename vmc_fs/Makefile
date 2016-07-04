@@ -7,24 +7,23 @@
 # Review ps2sdk README & LICENSE files for further details.
 #
 
-IOP_OBJS_DIR = obj/
-IOP_BIN_DIR = bin/
-IOP_SRC_DIR = src/
-IOP_INC_DIR = include/
-
-IOP_BIN  = $(IOP_BIN_DIR)vmc_fs.irx
+IOP_BIN  = vmc_fs.irx
 IOP_OBJS = vmc_fs.o vmc_io.o vmc_misc.o vmc_fat.o vmc_ps2.o imports.o
-IOP_OBJS := $(IOP_OBJS:%=$(IOP_OBJS_DIR)%)
 
-IOP_CFLAGS  += -Wall -fno-builtin
-IOP_LDFLAGS += -s
+IOP_CFLAGS  += -fno-builtin
 
-all: $(IOP_OBJS_DIR) $(IOP_BIN_DIR) $(IOP_BIN)
+# A rule to build imports.lst.
+%.o : %.lst
+	$(ECHO) "#include \"irx_imports.h\"" > build-imports.c
+	cat $< >> build-imports.c
+	$(IOP_CC) $(IOP_CFLAGS) -fno-toplevel-reorder -I. -c build-imports.c -o $@
+	-rm -f build-imports.c
+
+all: $(IOP_BIN)
 
 clean:
-	rm -f -r $(IOP_OBJS_DIR) $(IOP_BIN_DIR)
+	rm -f -r $(IOP_OBJS) $(IOP_BIN)
 
-include $(PS2SDKSRC)/Defs.make
-include $(PS2SDKSRC)/iop/Rules.make
-#include $(PS2SDKSRC)/Rules.release
-#include $(PS2SDK)/samples/Makefile.iopglobal
+include $(PS2SDK)/Defs.make
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.iopglobal

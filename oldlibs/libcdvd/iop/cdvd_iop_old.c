@@ -6,7 +6,7 @@
 #include <sifman.h>
 #include <sifcmd.h>
 #include <ioman.h>
-// #include "ps2libioman.h"
+#include "ps2libioman.h"
 #include <sysclib.h>
 #include <stdio.h>
 #include <sysmem.h>
@@ -171,10 +171,10 @@ static struct fdtable fd_table[16];
 static int fd_used[16];
 static int files_open;
 
-static struct iop_device_t file_driver;
+static struct fileio_driver file_driver;
 
 /* Filing-system exported functions */
-void CDVD_init( struct iop_device_t *driver);
+void CDVD_init( struct fileio_driver *driver);
 int CDVD_open( int kernel_fd, char *name, int mode);
 int CDVD_lseek(int kernel_fd, int offset, int whence);
 int CDVD_read( int kernel_fd, char * buffer, int size );
@@ -289,7 +289,7 @@ int dummy()
 	return -5;
 }
 
-void CDVD_init( struct iop_device_t *driver)
+void CDVD_init( struct fileio_driver *driver)
 {
 	printf("CDVD: CDVD Filesystem v1.15\n");
 	printf("by A.Lee (aka Hiryu) & Nicholas Van Veen (aka Sjeep)\n");
@@ -582,24 +582,24 @@ int _start( int argc, char **argv)
 	cdReadMode.datapattern = CdSecS2048;
 
 	// setup the file_driver structure
-	file_driver.name = (u8 *)"cdfs";
-	file_driver.type = 16;
+	file_driver.device = (u8 *)"cdfs";
+	file_driver.xx1 = 16;
 	file_driver.version = 1;
-	file_driver.desc = (u8 *)"CDVD Filedriver";
-	file_driver.ops = filedriver_functarray;
+	file_driver.description = (u8 *)"CDVD Filedriver";
+	file_driver.function_list = filedriver_functarray;
 
 	for (i=0;i < 16; i++)
 		filedriver_functarray[i] = dummy;
 
-	filedriver_functarray[ init ] = CDVD_init;
-	filedriver_functarray[ open ] = CDVD_open;
-	filedriver_functarray[ close ] = CDVD_close;
-	filedriver_functarray[ read ] = CDVD_read;
-	filedriver_functarray[ write ] = CDVD_write;
-	filedriver_functarray[ lseek ] = CDVD_lseek;
+	filedriver_functarray[ FIO_INITIALIZE ] = CDVD_init;
+	filedriver_functarray[ FIO_OPEN ] = CDVD_open;
+	filedriver_functarray[ FIO_CLOSE ] = CDVD_close;
+	filedriver_functarray[ FIO_READ ] = CDVD_read;
+	filedriver_functarray[ FIO_WRITE ] = CDVD_write;
+	filedriver_functarray[ FIO_SEEK ] = CDVD_lseek;
 
-	AddDrv( (u8 *)"cdfs");
-	DelDrv( &file_driver);
+	FILEIO_del( (u8 *)"cdfs");
+	FILEIO_add( &file_driver);
 
 	param.attr         = TH_C;
 	param.thread       = (void*)CDVD_Thread;

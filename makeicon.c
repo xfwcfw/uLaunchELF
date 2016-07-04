@@ -288,7 +288,7 @@ int make_icon(char* icontext,char* filename)
 	// allocates room for the texture and sets the background to black
 	tex_buffer=malloc(128*128*2);		// the entire 128x128 pixel image(16bpp)
 	memset(tex_buffer,0x00,128*128*2);	// black background
-	tex_printXY(icontext,0,0,0xFFFF);	// (string,xpos,ypos,color)
+	tex_printXY((u8 *)icontext,0,0,0xFFFF);	// (string,xpos,ypos,color)
 	u32 tex_size=tex_compresRLE();		// compress the texture, overwrites tex_buffer
 
 	int f=fioOpen(filename,O_WRONLY | O_CREAT);//open/create the file
@@ -322,7 +322,7 @@ int make_iconsys(char* title,char* iconname, char* filename)
 
 	memset(((void *) &icon_sys), 0, sizeof(icon_sys));
 
-	strcpy(icon_sys.head,"PS2D");
+	strcpy((char *)icon_sys.head,"PS2D");
 	icon_sys.nlOffset=0;//0=automagically wordwrap, otherwise newline position(multiple of 2)
 	strcpy_sjis((short *)&icon_sys.title, title);
 	
@@ -344,9 +344,9 @@ int make_iconsys(char* title,char* iconname, char* filename)
 	memcpy(icon_sys.lightDir,     lightdirection, 	sizeof(lightdirection));
 	memcpy(icon_sys.lightCol, 	  lightcolors, 		sizeof(lightcolors));
 	memcpy(icon_sys.lightAmbient, ambientlight,		sizeof(ambientlight));
-	strcpy(icon_sys.view, 	iconname);
-	strcpy(icon_sys.copy, 	iconname);
-	strcpy(icon_sys.del, 	iconname);
+	strcpy((char *)icon_sys.view, 	iconname);
+	strcpy((char *)icon_sys.copy, 	iconname);
+	strcpy((char *)icon_sys.del, 	iconname);
 	
 	int f=fioOpen(filename,O_WRONLY | O_CREAT);// open/create the file
 	if(f<0)return -1;

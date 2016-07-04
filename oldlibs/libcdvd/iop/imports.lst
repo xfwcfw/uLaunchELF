@@ -1,13 +1,7 @@
-atad_IMPORTS_start
-I_ata_get_devinfo
-I_ata_device_sector_io
-I_ata_device_flush_cache
-atad_IMPORTS_end
-
-dev9_IMPORTS_start
-I_dev9IntrDisable
-I_dev9Shutdown
-dev9_IMPORTS_end
+intrman_IMPORTS_start
+I_CpuResumeIntr
+I_CpuSuspendIntr
+intrman_IMPORTS_end
 
 sifcmd_IMPORTS_start
 I_sceSifInitRpc 
@@ -16,25 +10,35 @@ I_sceSifRegisterRpc
 I_sceSifRpcLoop
 sifcmd_IMPORTS_end
 
+sifman_IMPORTS_start
+I_sceSifDmaStat
+I_sceSifSetDma
+sifman_IMPORTS_end
+
 stdio_IMPORTS_start
 I_printf
 stdio_IMPORTS_end
 
 sysclib_IMPORTS_start
-I_strcmp
+I_strcat
 I_strcpy
+I_strlen
+I_strncmp
+I_strncpy
+I_strrchr
+I_strtok
 I_memset
 I_memcpy
-I_memcmp
+I_tolower
 sysclib_IMPORTS_end
 
 sysmem_IMPORTS_start
 I_AllocSysMemory
-I_FreeSysMemory
 sysmem_IMPORTS_end
 
 thbase_IMPORTS_start
 I_GetThreadId
 I_CreateThread
+I_SleepThread
 I_StartThread
 thbase_IMPORTS_end

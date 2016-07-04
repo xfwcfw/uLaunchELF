@@ -40,7 +40,7 @@ enum {//For menu commands
 
 PARTYINFO PartyInfo[MAX_PARTITIONS];
 int  numParty;
-int  hddSize, hddFree, hddFreeSpace, hddUsed;
+u64  hddSize, hddFree, hddFreeSpace, hddUsed;
 int  hddConnected, hddFormated;
 
 char DbgMsg[MAX_TEXT_LINE*30];
@@ -280,14 +280,14 @@ int sizeSelector(int size)
 			drawFrame(mSprite_X1, mSprite_Y1, mSprite_X2, mSprite_Y2, setting->color[1]);
 
 			sprintf(c, "%d %s", size, LNG(MB));
-			printXY(c, mSprite_X1+12*FONT_WIDTH-(strlen(c)*FONT_WIDTH)/2,
+			printXY((u8 *)c, mSprite_X1+12*FONT_WIDTH-(strlen(c)*FONT_WIDTH)/2,
 				mSprite_Y1+FONT_HEIGHT, setting->color[3], TRUE, 0);
 			drawFrame(mSprite_X1+7*FONT_WIDTH, mSprite_Y1+FONT_HEIGHT/2,
 				mSprite_X2-7*FONT_WIDTH, mSprite_Y1+FONT_HEIGHT*2+FONT_HEIGHT/2, setting->color[1]);
 
 			//RA NB: Next line assumes a scrollbar 19 characters wide (see below)
 			sprintf(c, "128%s            %3d%s", LNG(MB), MAX_PARTGB, LNG(GB));
-			printXY(c, mSprite_X1+FONT_WIDTH, mSprite_Y1+FONT_HEIGHT*3, setting->color[3], TRUE, 0);
+			printXY((u8 *)c, mSprite_X1+FONT_WIDTH, mSprite_Y1+FONT_HEIGHT*3, setting->color[3], TRUE, 0);
 
 			drawOpSprite(setting->color[1],
 				mSprite_X1+2*FONT_WIDTH+FONT_WIDTH/2, mSprite_Y1+FONT_HEIGHT*5-LINE_THICKNESS+1,
@@ -315,7 +315,7 @@ int sizeSelector(int size)
 			else
 				sprintf(c, "ÿ0:%s ÿ1:%s ÿ3:%s ÿ</ÿ::-/+128%s L1/R1:-/+1%s L2/R2:-/+10%s",
 					LNG(OK), LNG(Cancel), LNG(Back), LNG(MB), LNG(GB), LNG(GB));
-			printXY(c, x, y, setting->color[2], TRUE, 0);
+			printXY((u8 *)c, x, y, setting->color[2], TRUE, 0);
 		}//ends if(event||post_event)
 		drawScr();
 		post_event = event;
@@ -419,7 +419,7 @@ int MenuParty(PARTYINFO Info)
 				if(enable[i])	color = setting->color[3];
 				else			color = setting->color[1];
 
-				printXY(tmp, mSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
+				printXY((u8 *)tmp, mSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
 				y+=FONT_HEIGHT;
 			}
 			if(sel<NUM_MENU)
@@ -435,7 +435,7 @@ int MenuParty(PARTYINFO Info)
 				sprintf(tmp, "ÿ1:%s ÿ0:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
 			else
 				sprintf(tmp, "ÿ0:%s ÿ1:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
-			printXY(tmp, x, y, setting->color[2], TRUE, 0);
+			printXY((u8 *)tmp, x, y, setting->color[2], TRUE, 0);
 		}//ends if(event||post_event)
 		drawScr();
 		post_event = event;
@@ -848,7 +848,7 @@ void hddManager(void)
 			y = Menu_start_y;
 
 			x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(LNG(HDD_STATUS))*FONT_WIDTH)/2;
-			printXY(LNG(HDD_STATUS), x, y, setting->color[3], TRUE, 0);
+			printXY((u8 *)LNG(HDD_STATUS), x, y, setting->color[3], TRUE, 0);
 
 			if(TV_mode == TV_mode_NTSC) 
 				y += FONT_HEIGHT+10;
@@ -870,7 +870,7 @@ void hddManager(void)
 				LNG(CONNECTED), LNG(YES), LNG(FORMATED), LNG(YES));
 
 			x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-			printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+			printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 
 			drawOpSprite(setting->color[1],
 				SCREEN_WIDTH/2-21, Frame_start_y,
@@ -887,15 +887,15 @@ void hddManager(void)
 
 			if(hddFormated==1){
 
-				sprintf(c, "%s: %d %s", LNG(HDD_SIZE), hddSize, LNG(MB));
+				sprintf(c, "%s: %llu %s", LNG(HDD_SIZE), hddSize, LNG(MB));
 				x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-				printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+				printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 				y += FONT_HEIGHT;
-				sprintf(c, "%s: %d %s", LNG(HDD_USED), hddUsed, LNG(MB));
-				printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+				sprintf(c, "%s: %llu %s", LNG(HDD_USED), hddUsed, LNG(MB));
+				printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 				y += FONT_HEIGHT;
-				sprintf(c, "%s: %d %s", LNG(HDD_FREE), hddFreeSpace, LNG(MB));
-				printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+				sprintf(c, "%s: %llu %s", LNG(HDD_FREE), hddFreeSpace, LNG(MB));
+				printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 
 				if(TV_mode == TV_mode_NTSC) 
 					ray = 45;
@@ -928,8 +928,8 @@ void hddManager(void)
 					gsKit_prim_line(gsGlobal, x, y, x2, y2+1, 1, Color);
 				}
 
-				sprintf(c, "%d%% %s",hddFree, LNG(FREE));
-				printXY(c, x-FONT_WIDTH*4, y-FONT_HEIGHT/4, setting->color[3], TRUE, 0);
+				sprintf(c, "%llu%% %s",hddFree, LNG(FREE));
+				printXY((u8 *)c, x-FONT_WIDTH*4, y-FONT_HEIGHT/4, setting->color[3], TRUE, 0);
 
 				if(TV_mode == TV_mode_NTSC) 
 					y += ray+15;
@@ -944,21 +944,21 @@ void hddManager(void)
 				if(Treat == TREAT_SYSTEM){
 					sprintf(c, "%s: %d %s", LNG(Raw_SIZE), (int)PartyInfo[browser_sel].RawSize, LNG(MB));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					strcpy(c, LNG(Reserved_for_system));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					pfsFree = 0;
 				} else if(Treat == TREAT_NOACCESS){
 					sprintf(c, "%s: %d %s", LNG(Raw_SIZE), (int)PartyInfo[browser_sel].RawSize, LNG(MB));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					strcpy(c, LNG(Inaccessible));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					pfsFree = 0;
 				} else if(Treat == TREAT_HDL_RAW){ //starts clause for HDL without GameInfo
@@ -966,42 +966,42 @@ void hddManager(void)
 					//dlanor NB: Not properly implemented yet
 					sprintf(c, "%s: %d %s", LNG(Raw_SIZE), (int)PartyInfo[browser_sel].RawSize, LNG(MB));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT*4;
 					strcpy(c, LNG(Info_not_loaded));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					pfsFree = -1; //Disable lower pie chart display
 				} else if(Treat == TREAT_HDL_GAME){ //starts clause for HDL with GameInfo
 					y += FONT_HEIGHT/4;
 
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-
 						(strlen(LNG(GAME_INFORMATION))*FONT_WIDTH)/2;
-					printXY(LNG(GAME_INFORMATION), x, y,
+					printXY((u8 *)LNG(GAME_INFORMATION), x, y,
 						setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)
 						-(strlen(PartyInfo[browser_sel].Game.Name)*FONT_WIDTH)/2;
 					y += FONT_HEIGHT*2;
-					printXY(PartyInfo[browser_sel].Game.Name, x, y,
+					printXY((u8 *)PartyInfo[browser_sel].Game.Name, x, y,
 						setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 
 					y += FONT_HEIGHT+FONT_HEIGHT/2+FONT_HEIGHT/4;
 					sprintf(c, "%s: %s", LNG(STARTUP), PartyInfo[browser_sel].Game.Startup);
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT+FONT_HEIGHT/2;
 					sprintf(c, "%s: %d %s", LNG(SIZE), (int)PartyInfo[browser_sel].RawSize, LNG(MB));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT+FONT_HEIGHT/2;
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-
 						(strlen(LNG(TYPE_DVD_GAME))*FONT_WIDTH)/2;
 					if(PartyInfo[browser_sel].Game.Is_Dvd==1)
-						printXY(LNG(TYPE_DVD_GAME), x, y,
+						printXY((u8 *)LNG(TYPE_DVD_GAME), x, y,
 							setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					else
-						printXY(LNG(TYPE_CD_GAME), x, y,
+						printXY((u8 *)LNG(TYPE_CD_GAME), x, y,
 							setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					pfsFree = -1; //Disable lower pie chart display
 					//---------- End of clause for HDL game partitions ----------
@@ -1010,13 +1010,13 @@ void hddManager(void)
 
 					sprintf(c, "%s: %d %s", LNG(PFS_SIZE), (int)PartyInfo[browser_sel].TotalSize, LNG(MB));
 					x = ((((SCREEN_WIDTH/2-25)-Menu_start_x)/2)+Menu_start_x)-(strlen(c)*FONT_WIDTH)/2;
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					sprintf(c, "%s: %d %s", LNG(PFS_USED), (int)PartyInfo[browser_sel].UsedSize, LNG(MB));
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 					y += FONT_HEIGHT;
 					sprintf(c, "%s: %d %s", LNG(PFS_FREE), (int)PartyInfo[browser_sel].FreeSize, LNG(MB));
-					printXY(c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
+					printXY((u8 *)c, x, y, setting->color[3], TRUE, ((SCREEN_WIDTH/2-20)-SCREEN_MARGIN-2*FONT_WIDTH));
 
 					pfsFree = (PartyInfo[browser_sel].FreeSize * 100) / PartyInfo[browser_sel].TotalSize;
 
@@ -1051,7 +1051,7 @@ void hddManager(void)
 					}
 
 					sprintf(c, "%d%% %s",pfsFree, LNG(FREE));
-					printXY(c, x-FONT_WIDTH*4, y-FONT_HEIGHT/2, setting->color[3], TRUE, 0);
+					printXY((u8 *)c, x-FONT_WIDTH*4, y-FONT_HEIGHT/2, setting->color[3], TRUE, 0);
 				}
 
 				rows = (Menu_end_y-Menu_start_y)/FONT_HEIGHT;
@@ -1066,7 +1066,7 @@ void hddManager(void)
 					else			 Color = setting->color[3];
 
 					strcpy(tmp,PartyInfo[top+i].Name);
-					printXY(tmp, x+4, y, Color, TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(SCREEN_WIDTH/2-FONT_WIDTH)));
+					printXY((u8 *)tmp, x+4, y, Color, TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(SCREEN_WIDTH/2-FONT_WIDTH)));
 					y += FONT_HEIGHT;
 				} //ends for, so all browser rows were fixed above
 				if(browser_nfiles > rows) { //if more files than available rows, use scrollbar

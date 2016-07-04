@@ -1,41 +1,42 @@
-IOP_OBJS	= main.o hdd.o apa.o hdl.o imports.o exports.o
+# _____     ___ ____     ___ ____
+#  ____|   |    ____|   |        | |____|
+# |     ___|   |____ ___|    ____| |    \    PS2DEV Open Source Project.
+#-----------------------------------------------------------------------
+# Copyright 2001-2004, ps2dev - http://www.ps2dev.org
+# Licenced under Academic Free License version 2.0
+# Review ps2sdk README & LICENSE files for further details.
+#
 
-IOP_BIN		= hdl_info.irx
+IOP_BIN	 = hdl_info.irx
+IOP_OBJS = main.o hdd.o apa.o hdl.o imports.o exports.o
 
-IOP_CFLAGS  += -Wall -fno-builtin
-IOP_LDFLAGS += -s
-IOP_INCS += -I$(PS2SDK)/iop/include -I$(PS2SDK)/common/include
+IOP_CFLAGS  += -fno-builtin
+IOP_LDFLAGS += -L$(PS2SDK)/iop/lib
 
-all: $(IOP_BIN)
-
-run: all
-	ps2client -h 192.168.0.10 -t 1 execiop host:$(IOP_BIN)
-reset: clean
-	ps2client -h 192.168.0.10 reset
-
-clean:
-	rm -f $(IOP_BIN) $(IOP_OBJS)
-
-# compiling with iop-gcc 3.2.2 causes weird problems in ps2ftpd
+# compiling with iop-gcc 3.2.3 causes weird problems in ps2ftpd
 # temporary solution is to turn off compiler optimization
 
 # IOP_CFLAGS += $(CFLAGS_TARGET) -O2 -G0 -c $(IOP_INCS) -Wall -fno-builtin
 
 # A rule to build imports.lst.
 %.o : %.lst
-	echo "#include \"irx_imports.h\"" > build-imports.c
+	$(ECHO) "#include \"irx_imports.h\"" > build-imports.c
 	cat $< >> build-imports.c
-	$(IOP_CC) $(IOP_CFLAGS) build-imports.c -o $@
+	$(IOP_CC) $(IOP_CFLAGS) -fno-toplevel-reorder -I. -c build-imports.c -o $@
 	-rm -f build-imports.c
 
 # A rule to build exports.tab.
 %.o : %.tab
-	echo "#include \"irx.h\"" > build-exports.c
+	$(ECHO) "#include \"irx.h\"" > build-exports.c
 	cat $< >> build-exports.c
-	$(IOP_CC) $(IOP_CFLAGS) build-exports.c -o $@
+	$(IOP_CC) $(IOP_CFLAGS) -fno-toplevel-reorder -I. -c build-exports.c -o $@
 	-rm -f build-exports.c
 
+all: $(IOP_BIN)
+
+clean:
+	rm -f -r $(IOP_OBJS) $(IOP_BIN)
+
+include $(PS2SDK)/Defs.make
 include $(PS2SDK)/samples/Makefile.pref
 include $(PS2SDK)/samples/Makefile.iopglobal
-#include $(PS2SDKSRC)/Defs.make
-#include $(PS2SDKSRC)/iop/Rules.make

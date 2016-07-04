@@ -49,7 +49,7 @@ int readCluster ( int fd, unsigned char* cluster, unsigned int clusternum )
 
 		memset ( Page_Data, g_Vmc_Image[ unit ].erase_byte, g_Vmc_Image[ unit ].header.page_size );
 
-		readPage ( fd, Page_Data, Page_Num + i );
+		readPage ( fd, (unsigned char *)Page_Data, Page_Num + i );
 
 		memcpy ( cluster + ( i * g_Vmc_Image[ unit ].header.page_size ), Page_Data, g_Vmc_Image[ unit ].header.page_size );
 
@@ -92,7 +92,7 @@ int writePage ( int fd, unsigned char* page, unsigned int pagenum )
 
 		ECC_Data  = ( char* )malloc ( ( 0x10 + 0xFF ) & ~( unsigned int )0xFF );
 
-		buildECC ( unit, page, ECC_Data );
+		buildECC ( unit, (char *)page, ECC_Data );
 		write ( fd, ECC_Data, 0x10 );
 		
 		free( ECC_Data );
@@ -122,7 +122,7 @@ int writeCluster ( int fd, unsigned char* cluster, unsigned int clusternum )
 		memset ( Page_Data, g_Vmc_Image[ unit ].erase_byte, g_Vmc_Image[ unit ].header.page_size );
 		memcpy ( Page_Data, cluster + ( i * g_Vmc_Image[ unit ].header.page_size ), g_Vmc_Image[ unit ].header.page_size );
 
-		writePage ( fd, Page_Data, Page_Num + i );
+		writePage ( fd, (unsigned char *)Page_Data, Page_Num + i );
 
 	}
 	
@@ -156,28 +156,28 @@ int writeClusterPart ( int fd, unsigned char* cluster, unsigned int clusternum, 
 			Page_offset = cluster_offset - g_Vmc_Image[ unit ].header.page_size * i;
 
 			memset ( Page_Data, g_Vmc_Image[ unit ].erase_byte, g_Vmc_Image[ unit ].header.page_size );
-			readPage ( fd, Page_Data, Page_Num );
+			readPage ( fd, (unsigned char *)Page_Data, Page_Num );
 
 			if ( size > g_Vmc_Image[ unit ].header.page_size - Page_offset ) 
 			{
 				
 				memcpy ( Page_Data + Page_offset, cluster, g_Vmc_Image[ unit ].header.page_size - Page_offset );
-				writePage ( fd, Page_Data, Page_Num );
+				writePage ( fd, (unsigned char *)Page_Data, Page_Num );
 
 				Page_Num++;
 
 				memset ( Page_Data, g_Vmc_Image[ unit ].erase_byte, g_Vmc_Image[ unit ].header.page_size );
-				readPage ( fd, Page_Data, Page_Num );
+				readPage ( fd, (unsigned char *)Page_Data, Page_Num );
 
 				memcpy ( Page_Data, cluster + ( g_Vmc_Image[ unit ].header.page_size - Page_offset ), size - ( g_Vmc_Image[ unit ].header.page_size - Page_offset )  );
-				writePage ( fd, Page_Data, Page_Num );
+				writePage ( fd, (unsigned char *)Page_Data, Page_Num );
 				
 			}
 			else
 			{
 
 				memcpy ( Page_Data + Page_offset, cluster, size );
-				writePage ( fd, Page_Data, Page_Num );
+				writePage ( fd, (unsigned char *)Page_Data, Page_Num );
 			
 			}
 				
@@ -209,7 +209,7 @@ int eraseBlock ( int fd, unsigned int block )
 	for ( i = 0; i < g_Vmc_Image[ unit ].header.pages_per_block; i++ ) 
 	{ 
 
-		writePage ( fd, Page_Data, Page_Num + i );
+		writePage ( fd, (unsigned char *)Page_Data, Page_Num + i );
 
 	}
 	

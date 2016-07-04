@@ -185,7 +185,7 @@ int MenuEditor(void)
 				if(enable[i])	color = setting->color[3];
 				else			color = setting->color[1];
 
-				printXY(tmp, mSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
+				printXY((u8 *)tmp, mSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
 				y+=FONT_HEIGHT;
 			}
 			if(Menu_Sel<NUM_MENU)
@@ -201,7 +201,7 @@ int MenuEditor(void)
 				sprintf(tmp, "ÿ1:%s ÿ0:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
 			else
 				sprintf(tmp, "ÿ0:%s ÿ1:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
-			printXY(tmp, x, y, setting->color[2], TRUE, 0);
+			printXY((u8 *)tmp, x, y, setting->color[2], TRUE, 0);
 		}//ends if(event||post_event).
 		drawScr();
 		post_event = event;
@@ -457,10 +457,10 @@ abort:
 
 	if(Operation>0){ // Perform Add Char / Paste. Can Be Simplify???
 		TextBuffer[TMP] = malloc(TextSize[Active_Window]+ins1+256); // 256 To Avoid Crash 256???
-		strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+		strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 		//memset(TextBuffer[Active_Window], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???		free(TextBuffer[Active_Window]);
 		TextBuffer[Active_Window] = malloc(TextSize[Active_Window]+ins1+256); // 256 To Avoid Crash 256???
-		strcpy(TextBuffer[Active_Window], TextBuffer[TMP]);
+		strcpy((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]);
 	}
 
 	switch(Operation){
@@ -468,14 +468,14 @@ abort:
 		break;
 	case -1:// Perform Del Char / Cut. Can Be Simplify???
 		TextBuffer[TMP] = malloc(TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
-		strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+		strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 		TextBuffer[Active_Window][Editor_Cur+del1]='\0';
-		strcat(TextBuffer[Active_Window], TextBuffer[TMP]+(Editor_Cur+del2));
-		strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+		strcat((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]+(Editor_Cur+del2));
+		strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 		//memset(TextBuffer[Active_Window], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 		free(TextBuffer[Active_Window]);
 		TextBuffer[Active_Window] = malloc(TextSize[Active_Window]+del3+256); // 256 To Avoid Crash 256???
-		strcpy(TextBuffer[Active_Window], TextBuffer[TMP]);
+		strcpy((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]);
 		//memset(TextBuffer[TMP], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 		free(TextBuffer[TMP]);
 		Editor_Cur+=del3, TextSize[Active_Window]+=del4;
@@ -506,7 +506,7 @@ abort:
 		goto common;
 	common:
 		TextBuffer[Active_Window][Editor_Cur+ins3]='\0';
-		strcat(TextBuffer[Active_Window], TextBuffer[TMP]+(Editor_Cur+ins4));
+		strcat((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]+(Editor_Cur+ins4));
 		//memset(TextBuffer[TMP], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 		free(TextBuffer[TMP]);
 		Editor_Cur+=ins5, TextSize[Active_Window]+=ins1;
@@ -765,10 +765,10 @@ int KeyBoard_Entry(void)
 
 		if(Operation>0){ // Perform Add Char / Paste. Can Be Simplify???
 			TextBuffer[TMP] = malloc(TextSize[Active_Window]+ins1+256); // 256 To Avoid Crash 256???
-			strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+			strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 			//memset(TextBuffer[Active_Window], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???		free(TextBuffer[Active_Window]);
 			TextBuffer[Active_Window] = malloc(TextSize[Active_Window]+ins1+256); // 256 To Avoid Crash 256???
-			strcpy(TextBuffer[Active_Window], TextBuffer[TMP]);
+			strcpy((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]);
 		}
 
 		switch(Operation){
@@ -778,14 +778,14 @@ int KeyBoard_Entry(void)
 		case -2:
 		case -3:
 			TextBuffer[TMP] = malloc(TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
-			strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+			strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 			TextBuffer[Active_Window][Editor_Cur+del1]='\0';
-			strcat(TextBuffer[Active_Window], TextBuffer[TMP]+(Editor_Cur+del2));
-			strcpy(TextBuffer[TMP], TextBuffer[Active_Window]);
+			strcat((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]+(Editor_Cur+del2));
+			strcpy((char *)TextBuffer[TMP], (char *)TextBuffer[Active_Window]);
 			//memset(TextBuffer[Active_Window], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 			free(TextBuffer[Active_Window]);
 			TextBuffer[Active_Window] = malloc(TextSize[Active_Window]+del3+256); // 256 To Avoid Crash 256???
-			strcpy(TextBuffer[Active_Window], TextBuffer[TMP]);
+			strcpy((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]);
 			//memset(TextBuffer[TMP], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 			free(TextBuffer[TMP]);
 			Editor_Cur+=del3, TextSize[Active_Window]+=del4;
@@ -809,7 +809,7 @@ int KeyBoard_Entry(void)
 			TextBuffer[Active_Window][Editor_Cur+ins2]=KeyPress;
 		common:
 			TextBuffer[Active_Window][Editor_Cur+ins3]='\0';
-			strcat(TextBuffer[Active_Window], TextBuffer[TMP]+(Editor_Cur+ins4));
+			strcat((char *)TextBuffer[Active_Window], (char *)TextBuffer[TMP]+(Editor_Cur+ins4));
 			//memset(TextBuffer[TMP], 0, TextSize[Active_Window]+256); // 256 To Avoid Crash 256???
 			free(TextBuffer[TMP]);
 			Editor_Cur+=ins5, TextSize[Active_Window]+=ins1;
@@ -996,11 +996,11 @@ int Windows_Selector(void)
 					color = setting->color[3];
 
 				if(!Window[i][OPENED])
-					printXY(LNG(Free_Window), wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
+					printXY((u8 *)LNG(Free_Window), wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
 				else if(Window[i][CREATED])
-					printXY(LNG(Window_Not_Yet_Saved), wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
+					printXY((u8 *)LNG(Window_Not_Yet_Saved), wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
 				else if(Window[i][OPENED])				
-					printXY(Path[i], wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
+					printXY((u8 *)Path[i], wSprite_X1+2*FONT_WIDTH, y, color, TRUE, 0);
 
 				y+=FONT_HEIGHT;
 			}
@@ -1018,7 +1018,7 @@ int Windows_Selector(void)
 				sprintf(tmp, "ÿ1:%s ÿ0:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
 			else
 				sprintf(tmp, "ÿ0:%s ÿ1:%s ÿ3:%s", LNG(OK), LNG(Cancel), LNG(Back));
-			printXY(tmp, x, y, setting->color[2], TRUE, 0);
+			printXY((u8 *)tmp, x, y, setting->color[2], TRUE, 0);
 		}//ends if(event||post_event).
 		drawScr();
 		post_event = event;
@@ -1522,40 +1522,40 @@ abort:
 					color=setting->color[2];
 				else
 					color=setting->color[3];
-				printXY(LNG(MARK), KEY_X+2+4-120, KEY_Y+12,
+				printXY((u8 *)LNG(MARK), KEY_X+2+4-120, KEY_Y+12,
 					color, TRUE, ((KEY_X-48)-SCREEN_MARGIN-3*FONT_WIDTH));
-				printXY(LNG(LINE_UP), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12,
+				printXY((u8 *)LNG(LINE_UP), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12,
 					setting->color[3], TRUE, ((KEY_X+32)-(KEY_X-48)-3*FONT_WIDTH));
 				if(Mark[MARK_COPY])
 					color=setting->color[2];
 				else
 					color=setting->color[3];
-				printXY(LNG(COPY), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT+2,
+				printXY((u8 *)LNG(COPY), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT+2,
 					color, TRUE, ((KEY_X-48)-SCREEN_MARGIN-3*FONT_WIDTH));
-				printXY(LNG(LINE_DOWN), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT+2,
+				printXY((u8 *)LNG(LINE_DOWN), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT+2,
 					setting->color[3], TRUE, ((KEY_X+32)-(KEY_X-48)-3*FONT_WIDTH));
 				if(Mark[MARK_CUT])
 					color=setting->color[2];
 				else
 					color=setting->color[3];
-				printXY(LNG(CUT), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*2+4,
+				printXY((u8 *)LNG(CUT), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*2+4,
 					color, TRUE, ((KEY_X-48)-SCREEN_MARGIN-3*FONT_WIDTH));
-				printXY(LNG(PAGE_UP), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*2+4,
+				printXY((u8 *)LNG(PAGE_UP), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*2+4,
 					setting->color[3], TRUE, ((KEY_X+32)-(KEY_X-48)-3*FONT_WIDTH));
-				printXY(LNG(PASTE), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*3+6,
+				printXY((u8 *)LNG(PASTE), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*3+6,
 					setting->color[3], TRUE, ((KEY_X-48)-SCREEN_MARGIN-3*FONT_WIDTH));
-				printXY(LNG(PAGE_DOWN), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*3+6,
+				printXY((u8 *)LNG(PAGE_DOWN), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*3+6,
 					setting->color[3], TRUE, ((KEY_X+32)-(KEY_X-48)-3*FONT_WIDTH));
-				printXY(LNG(HOME), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*4+8,
+				printXY((u8 *)LNG(HOME), KEY_X+2+4-120, KEY_Y+12+FONT_HEIGHT*4+8,
 					setting->color[3], TRUE, ((KEY_X-48)-SCREEN_MARGIN-3*FONT_WIDTH));
-				printXY(LNG(END), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*4+8,
+				printXY((u8 *)LNG(END), KEY_X+2+4-120+10*FONT_WIDTH, KEY_Y+12+FONT_HEIGHT*4+8,
 					setting->color[3], TRUE, ((KEY_X+32)-(KEY_X-48)-3*FONT_WIDTH));
 
 				if(Editor_Insert)
 					color=setting->color[2];
 				else
 					color=setting->color[3];
-				printXY(LNG(INSERT), KEY_X+2+4+392, KEY_Y+12,
+				printXY((u8 *)LNG(INSERT), KEY_X+2+4+392, KEY_Y+12,
 					color, TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(KEY_X+KEY_W+32)-3*FONT_WIDTH));
 				tmp[0]='\0';
 				if(Editor_RetMode==OTHER)
@@ -1564,13 +1564,13 @@ abort:
 					strcpy(tmp, LNG(RET_CR));
 				else if(Editor_RetMode==MAC)
 					strcpy(tmp, LNG(RET_LF));
-				printXY(tmp, KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT+2,
+				printXY((u8 *)tmp, KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT+2,
 					setting->color[3], TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(KEY_X+KEY_W+32)-3*FONT_WIDTH));
-				printXY(LNG(TAB), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*2+4,
+				printXY((u8 *)LNG(TAB), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*2+4,
 					setting->color[3], TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(KEY_X+KEY_W+32)-3*FONT_WIDTH));
-				printXY(LNG(SPACE), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*3+6,
+				printXY((u8 *)LNG(SPACE), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*3+6,
 					setting->color[3], TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(KEY_X+KEY_W+32)-3*FONT_WIDTH));
-				printXY(LNG(KB_RETURN), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*4+8,
+				printXY((u8 *)LNG(KB_RETURN), KEY_X+2+4 + 392, KEY_Y+12+FONT_HEIGHT*4+8,
 					setting->color[3], TRUE, ((SCREEN_WIDTH-SCREEN_MARGIN)-(KEY_X+KEY_W+32)-3*FONT_WIDTH));
 
 				for(i=0; i<KEY_LEN; i++){

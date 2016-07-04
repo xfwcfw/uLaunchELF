@@ -1,13 +1,17 @@
- EE_INCS := $(EE_INCS) -I$(PS2SDK)/sbv/include
+# _____     ___ ____     ___ ____
+#  ____|   |    ____|   |        | |____|
+# |     ___|   |____ ___|    ____| |    \    PS2DEV Open Source Project.
+#-----------------------------------------------------------------------
+# Copyright 2001-2004, ps2dev - http://www.ps2dev.org
+# Licenced under Academic Free License version 2.0
+# Review ps2sdk README & LICENSE files for further details.
+#
 
-EE_CFLAGS  := -ffreestanding -fno-builtin -G0 \
-		-fshort-double -mhard-float -mno-abicalls -O2 -EL -Wall \
-		$(EE_INCS) $(EE_CFLAGS)
-#EE_CFLAGS  := -G0 \
-		-O2 -EL -Wall \
-		$(EE_INCS) $(EE_CFLAGS)
+EE_CFLAGS  := -ffreestanding -fno-builtin \
+		-fshort-double -mhard-float -mno-abicalls -EL \
+#EE_CFLAGS  := -G0 -EL
 
-EE_ASFLAGS := -EL -G0 $(EE_ASFLAGS)
+EE_ASFLAGS := -EL $(EE_ASFLAGS)
 
 ###dlanor: adjust these three, for PS2Link compatibility tests
 ###dlanor: old LaunchELF used LA=0x90000, SA=0xB0000, SS=0x08000
@@ -29,7 +33,6 @@ EE_LDFLAGS += -Wl,-Ttext -Wl,$(LOADADDR) -s $(LDPARAMS)
 EE_LDFLAGS := $(EE_LDFLAGS) -L$(PS2SDK)/sbv/lib \
 
 EE_BIN = loader.elf
-
 EE_OBJS = loader.o
 
 EE_LIBS = -lfileXio -lpatches
@@ -40,7 +43,8 @@ endif
 all: $(EE_BIN)
 
 clean:
-	rm -f *.o *.a *.s *.elf
+	rm -f -r $(EE_OBJS) $(EE_BIN)
 
+include $(PS2SDK)/Defs.make
 include $(PS2SDK)/samples/Makefile.pref
 include $(PS2SDK)/samples/Makefile.eeglobal

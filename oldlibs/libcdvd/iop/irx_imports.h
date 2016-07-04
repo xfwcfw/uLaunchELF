@@ -17,9 +17,10 @@
 #include "irx.h"
 
 /* Please keep these in alphabetical order!  */
-#include "atad.h"
-#include "dev9.h"
+#include "intrman.h"
+#include <ps2libioman.h>
 #include "sifcmd.h"
+#include "sifman.h"
 #include "stdio.h"
 #include "sysclib.h"
 #include "sysmem.h"
