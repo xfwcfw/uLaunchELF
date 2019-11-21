@@ -375,5 +375,7 @@ lang(0, Net_Config, "Net Config")
     // New status message for HDD information read, when there are too many partitions.
     lang(326, HDD_Information_Read_Overflow, "HDD Information Read (truncated)")
     //---------------------------------------------------------------------------
+    lang(327, Loading_Flash_Modules, "Loading Flash Modules...")
+    //---------------------------------------------------------------------------
     //End of file:  lang.h
     //---------------------------------------------------------------------------

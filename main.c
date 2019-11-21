@@ -109,6 +109,7 @@ char netConfig[IPCONF_MAX_LEN + 64];  //Adjust size as needed
 //State of module collections
 static u8 have_NetModules = 0;
 static u8 have_HDD_modules = 0;
+static u8 have_Flash_modules = 0;
 //State of Uncheckable Modules (invalid header)
 static u8 have_cdvd = 0;
 static u8 have_usbd = 0;
@@ -308,8 +309,8 @@ static void Show_About_uLE(void)
 			PrintPos(-1, hpos, "  Ronald Andersson (aka: 'dlanor')");
 			PrintPos(-1, hpos, "");
 			PrintPos(-1, hpos, "Other contributors:");
-			PrintPos(-1, hpos, "  Polo35, radad, Drakonite, sincro");
-			PrintPos(-1, hpos, "  kthu, Slam-Tilt, chip, pixel, Hermes");
+			PrintPos(-1, hpos, "  Polo35, radad, Drakonite, sincro, kthu");
+			PrintPos(-1, hpos, "  Slam-Tilt, chip, pixel, Hermes, balika011");
 			PrintPos(-1, hpos, "  and others in the PS2Dev community");
 			PrintPos(-1, hpos, "");
 			PrintPos(-1, hpos, "Main release site:");
@@ -727,6 +728,14 @@ static void load_ps2atad(void)
 }
 //------------------------------
 //endfunc load_ps2atad
+//---------------------------------------------------------------------------
+static void load_pflash(void)
+{
+	SifLoadModule("rom0:PFLASH", 0, NULL);
+	SifLoadModule("rom0:PXFROMMAN", 0, NULL);
+}
+//------------------------------
+//endfunc load_pflash
 //---------------------------------------------------------------------------
 void load_ps2host(void)
 {
@@ -1222,6 +1231,19 @@ void loadHddModules(void)
 //------------------------------
 //endfunc loadHddModules
 //---------------------------------------------------------------------------
+void loadFlashModules(void)
+{
+	if (!have_Flash_modules) {
+		if (!is_early_init)  //Do not draw any text before the UI is initialized.
+			drawMsg(LNG(Loading_Flash_Modules));
+		setupPowerOff();
+		load_pflash();
+		have_Flash_modules = TRUE;
+	}
+}
+//------------------------------
+//endfunc loadFlashModules
+//---------------------------------------------------------------------------
 // Load Network modules by EP (modified by RA)
 //------------------------------
 static void loadNetModules(void)
@@ -1702,7 +1724,12 @@ Recurse_for_ESR:  //Recurse here for PS2Disc command with ESR disc
 		sprintf(fullpath, "pfs0:%s", p);
 		*p = 0;
 		goto ELFchecked;
-
+	} else if (!strncmp(path, "xfrom:/", 6)) {
+		loadFlashModules();
+		if ((t = checkELFheader(path)) <= 0)
+			goto ELFnotFound;
+		strcpy(fullpath, path);
+		goto ELFchecked;
 	} else if (!strncmp(path, "mass", 4)) {
 		if ((t = checkELFheader(path)) <= 0)
 			goto ELFnotFound;
@@ -2021,6 +2048,7 @@ static void Reset()
 	have_ps2kbd = 0;
 	have_NetModules = 0;
 	have_HDD_modules = 0;
+	have_Flash_modules = 0;
 
 	loadBasicModules();
 	loadCdModules();

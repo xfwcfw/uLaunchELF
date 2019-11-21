@@ -1,7 +1,7 @@
 #ifndef LAUNCHELF_H
 #define LAUNCHELF_H
 
-#define ULE_VERSION "v4.43a"
+#define ULE_VERSION "v4.43a XFW"
 //#ifndef ULE_VERDATE
 //#define ULE_VERDATE __DATE__
 //#endif
@@ -206,6 +206,7 @@ extern int cdmode;      //Last detected disc type
 void load_vmc_fs(void);
 void load_ps2host(void);
 void loadHddModules(void);
+void loadFlashModules(void);
 void loadHdlInfoModule(void);
 int uLE_related(char *pathout, const char *pathin);
 int uLE_InitializeRegion(void);

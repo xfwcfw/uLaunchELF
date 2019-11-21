@@ -1005,6 +1005,53 @@ int readHDD(const char *path, FILEINFO *info, int max)
 //------------------------------
 //endfunc readHDD
 //--------------------------------------------------------------
+
+int readXFROM(const char *path, FILEINFO *info, int max)
+{
+	iox_dirent_t dirbuf;
+	char dir[MAX_PATH];
+	int i = 0, fd;
+	volatile int j;
+
+	loadFlashModules();
+
+	strcpy(dir, path);
+	if ((fd = fileXioDopen(path)) < 0)
+		return 0;
+
+	while (fileXioDread(fd, &dirbuf) > 0) {
+		if (dirbuf.stat.mode & FIO_S_IFDIR &&
+		    (!strcmp(dirbuf.name, ".") || !strcmp(dirbuf.name, "..")))
+			continue;  //Skip pseudopaths "." and ".."
+
+		strcpy(info[i].name, dirbuf.name);
+		clear_mcTable(&info[i].stats);
+		if (dirbuf.stat.mode & FIO_S_IFDIR) {
+			info[i].stats.AttrFile = MC_ATTR_norm_folder;
+		} else if (dirbuf.stat.mode & FIO_S_IFREG) {
+			info[i].stats.AttrFile = MC_ATTR_norm_file;
+			info[i].stats.FileSizeByte = dirbuf.stat.size;
+			info[i].stats.Reserve2 = dirbuf.stat.hisize;
+		} else
+			continue;  //Skip entry which is neither a file nor a folder
+		strncpy((char *)info[i].stats.EntryName, info[i].name, 32);
+		memcpy((void *)&info[i].stats._Create, dirbuf.stat.ctime, 8);
+		memcpy((void *)&info[i].stats._Modify, dirbuf.stat.mtime, 8);
+		i++;
+		if (i == max)
+			break;
+	}
+
+	fileXioDclose(fd);
+
+	size_valid = 1;
+	time_valid = 1;
+
+	return i;
+}
+//------------------------------
+//endfunc readXFROM
+//--------------------------------------------------------------
 void scan_USB_mass(void)
 {
 	int i;
@@ -1230,6 +1277,8 @@ int getDir(const char *path, FILEINFO *info)
 		n = readHOST(path, info, max);
 	else if (!strncmp(path, "vmc", 3))
 		n = readVMC(path, info, max);
+	else if (!strncmp(path, "xfrom", 3))
+		n = readXFROM(path, info, max);
 	else
 		return 0;
 
@@ -3013,6 +3062,9 @@ int setFileList(const char *path, const char *ext, FILEINFO *files, int cnfmode)
 				files[nfiles++].stats.AttrFile = sceMcFileAttrSubdir;
 			}
 		}
+		// TODO: check if the device we are running in is a PSX or not
+		strcpy(files[nfiles].name, "xfrom:");
+		files[nfiles++].stats.AttrFile = sceMcFileAttrSubdir;
 		if (cnfmode < 2) {
 			//This condition blocks use of MISC pseudo-device for drivers and skins
 			//And allows this device only for launch keys and for normal browsing
